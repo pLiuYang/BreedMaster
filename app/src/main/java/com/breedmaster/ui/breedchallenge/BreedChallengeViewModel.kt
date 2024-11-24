@@ -35,21 +35,24 @@ class BreedChallengeViewModel(
 
         viewModelScope.launch {
             val breeds = breedsRepo.getAllBreeds().getOrNull() ?: run {
-                Log.e(TAG, "failed to get all breeds")
-                // TODO UI error state
+                setErrorState("failed to get all breeds")
                 return@launch
             }
 
             val (breed, imageUrl) = getRandomBreedWithImage(breeds) ?: run {
-                Log.e(TAG, "failed to get a breed with image")
-                // TODO UI error state
+                setErrorState("failed to get a breed with image")
                 return@launch
             }
 
             // Validate the imageUrl
             if (imageUrl.isEmpty()) {
-                Log.e(TAG, "invalid image URL")
-                // TODO UI error state
+                setErrorState("invalid image URL")
+                return@launch
+            }
+
+            val breedOptions: List<String> = getThreeBreedsUseCase(breeds, breed)
+            if (breedOptions.isEmpty()) {
+                setErrorState("not enough breed options")
                 return@launch
             }
 
@@ -58,7 +61,7 @@ class BreedChallengeViewModel(
                 question = BreedChallengeQuestion(
                     breed = breed.getDisplayName(),
                     imageUrl = imageUrl,
-                    breedOptions = getThreeBreedsUseCase(breeds, breed)
+                    breedOptions = breedOptions
                 ),
                 answer = BreedChallengeAnswer(
                     state = AnswerState.ANSWERING,
@@ -99,6 +102,11 @@ class BreedChallengeViewModel(
         return breedsRepo.getRandomImageForBreed(randomBreed).getOrNull()?.let { imageUrl ->
             Pair(randomBreed, imageUrl)
         }
+    }
+
+    private fun setErrorState(errorMessage: String) {
+        Log.e(TAG, errorMessage)
+        _uiState.value = BreedChallengeUiState.Error(errorMessage)
     }
 }
 

@@ -27,7 +27,7 @@ class BreedTest {
         val displayName = breed.getDisplayName()
 
         // Assert
-        assertEquals("Hound irish", displayName)
+        assertEquals("Irish hound", displayName)
     }
 
     @Test
@@ -63,6 +63,6 @@ class BreedTest {
         val displayName = breed.getDisplayName()
 
         // Assert
-        assertEquals("Sheepdog old english", displayName)
+        assertEquals("Old english sheepdog", displayName)
     }
 }

@@ -9,7 +9,7 @@ data class Breed(val name: String, val subBreed: String = "") {
         return if (subBreed.isEmpty()) {
             name.capFirstLetter()
         } else {
-            "${name.capFirstLetter()} $subBreed"
+            "${subBreed.capFirstLetter()} $name"
         }
     }
 
