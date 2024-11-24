@@ -43,7 +43,7 @@ Public API
 |          | Edge cases                             |
 
 # Screen recording
-![Screen_recording_20241124_155922.gif](media%2FScreen_recording_20241124_155922.gif)
+<img src=media%2FScreen_recording_20241124_155922.gif width="360" height="640">
 
 # Product feature extensions
 | Priority | Est. effort | Feature                                                |
