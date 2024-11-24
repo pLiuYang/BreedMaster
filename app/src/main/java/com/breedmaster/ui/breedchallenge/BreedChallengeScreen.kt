@@ -1,6 +1,5 @@
 package com.breedmaster.ui.breedchallenge
 
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
