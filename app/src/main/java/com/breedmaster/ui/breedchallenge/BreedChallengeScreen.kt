@@ -1,38 +1,38 @@
 package com.breedmaster.ui.breedchallenge
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.breedmaster.ui.theme.BreedMasterTheme
 
 @Composable
 fun BreedChallengeScreen(modifier: Modifier = Modifier.Companion) {
     Column(modifier.fillMaxSize().padding(top = 32.dp)) {
-        Image(
-            imageVector = Icons.Filled.AccountCircle,
+        AsyncImage(
+            model = "https://images.dog.ceo/breeds/hound-afghan/n02088094_890.jpg",
             contentDescription = "Picture of a dog",
-            modifier = Modifier.Companion
-                .align(Alignment.Companion.CenterHorizontally)
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
                 .padding(16.dp)
                 .size(242.dp),
         )
 
         Text(
             text = "Please choose the breed of this dog",
-            modifier = Modifier.Companion.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
+            style = MaterialTheme.typography.titleLarge
         )
 
         val onBreedOptionClick: (Int) -> Unit =
