@@ -46,7 +46,18 @@ Data layer         Domain layer        UI layer
 |          | Refresh image & options                |
 |          | Edge cases                             |
 
-# Feature extensions
+# Product feature extensions
+| Priority | Est. effort | Feature                                                |
+|----------|-------------|--------------------------------------------------------|
+| P0       | S           | Update app icon                                        |
+| P1       | M           | Add loading & error state for image                    |
+| P2       | M           | Show the number of consecutive correct answers (combo) |
+| P2       | S           | Support saving favorite breeds                         |
+| P3       | L           | Support browsing all breeds with images                |
+| P4       | XL          | Play online and compete with friends                   |
 
-# Optimisations
-
+# Technical feature extensions
+- Upload exception logs
+- Analytics logs: performance, user behaviour
+- Cache data in local database (to support faster data loading and reduce server QPS)
+- Dependency injection
