@@ -1,13 +1,19 @@
 package com.breedmaster.ui.breedchallenge
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,44 +37,72 @@ fun BreedChallengeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    Column(
-        modifier
-            .fillMaxSize()
-            .padding(top = 32.dp)
-    ) {
-        // Question
-        AsyncImage(
-            model = uiState.question.imageUrl,
-            contentDescription = "Picture of a dog",
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(16.dp)
-                .size(300.dp),
-        )
-        Text(
-            text = "What breed is this adorable dog?",
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.titleLarge
-        )
+    Box(modifier = modifier.fillMaxSize()) {
+        when (uiState) {
+            is BreedChallengeUiState.Loading -> {
+                // Show loading indicator when loading
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
 
-        // Options
-        // TODO check for edge case
-        for (i in 0 until 3) {
-            BreedOption(
-                uiState.question.breedOptions[i],
-                uiState.question.breed,
-                uiState.answer
-            ) { viewModel.answer(uiState.question.breedOptions[i]) }
+            is BreedChallengeUiState.BreedChallenge -> {
+                val state = uiState as BreedChallengeUiState.BreedChallenge
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(top = 32.dp)
+                ) {
+                    // Question
+                    AsyncImage(
+                        model = state.question.imageUrl,
+                        contentDescription = "Picture of a dog",
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(16.dp)
+                            .size(300.dp),
+                    )
+                    Text(
+                        text = "What breed is this adorable dog?",
+                        modifier = Modifier.padding(16.dp),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+
+                    // Options
+                    // TODO check for edge case
+                    for (i in 0 until 3) {
+                        BreedOption(
+                            state.question.breedOptions[i],
+                            state.question.breed,
+                            state.answer
+                        ) { viewModel.answer(state.question.breedOptions[i]) }
+                    }
+
+                    // Result
+                    Text(
+                        text = getResultText(state.answer.state, state.question.breed),
+                        modifier = Modifier
+                            .padding(24.dp)
+                            .align(Alignment.CenterHorizontally),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+
+                RefreshButton(
+                    refreshAction = { viewModel.refreshQuestion() },
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(16.dp)
+                )
+            }
+
+            is BreedChallengeUiState.Error -> {
+                RefreshButton(
+                    refreshAction = { viewModel.refreshQuestion() },
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(16.dp)
+                )
+            }
         }
-
-        // Result
-        Text(
-            text = getResultText(uiState.answer.state, uiState.question.breed),
-            modifier = Modifier
-                .padding(24.dp)
-                .align(Alignment.CenterHorizontally),
-            style = MaterialTheme.typography.bodyLarge
-        )
     }
 }
 
@@ -98,6 +132,19 @@ fun BreedOption(
             .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         Text(text = breedOption)
+    }
+}
+
+@Composable
+fun RefreshButton(refreshAction: () -> Unit, modifier: Modifier = Modifier) {
+    IconButton(
+        onClick = refreshAction,
+        modifier = modifier,
+    ) {
+        Icon(
+            imageVector = Icons.Default.Refresh,
+            contentDescription = "Refresh"
+        )
     }
 }
 

@@ -7,6 +7,7 @@ import com.breedmaster.data.BreedsRepository
 import com.breedmaster.data.impl.RemoteBreedsRepository
 import com.breedmaster.domain.GetThreeBreedsUseCase
 import com.breedmaster.model.Breed
+import com.breedmaster.ui.breedchallenge.BreedChallengeUiState.BreedChallenge
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -19,21 +20,9 @@ import kotlin.random.Random
 class BreedChallengeViewModel(
     private val breedsRepo: BreedsRepository = RemoteBreedsRepository(),
     private val getThreeBreedsUseCase: GetThreeBreedsUseCase = GetThreeBreedsUseCase()
-) :
-    ViewModel() {
+) : ViewModel() {
 
-    private val initialState = BreedChallengeUiState(
-        BreedChallengeQuestion(
-            "affenpinscher",
-            "https://images.dog.ceo/breeds/hound-english/n02089973_2300.jpg",
-            listOf("affenpinscher", "hound", "cavapoo"),
-        ),
-        BreedChallengeAnswer(
-            state = AnswerState.ANSWERING,
-            breed = "",
-        ),
-    )
-    private val _uiState = MutableStateFlow(initialState)
+    private val _uiState = MutableStateFlow<BreedChallengeUiState>(BreedChallengeUiState.Loading)
     val uiState: StateFlow<BreedChallengeUiState> = _uiState
 
     init {
@@ -41,7 +30,8 @@ class BreedChallengeViewModel(
     }
 
     fun refreshQuestion() {
-        // TODO: Set UI to loading state
+        Log.i(TAG, "refreshQuestion")
+        _uiState.value = BreedChallengeUiState.Loading
 
         viewModelScope.launch {
             val breeds = breedsRepo.getAllBreeds().getOrNull() ?: run {
@@ -64,7 +54,7 @@ class BreedChallengeViewModel(
             }
 
             // Populate the new question
-            _uiState.value = BreedChallengeUiState(
+            _uiState.value = BreedChallenge(
                 question = BreedChallengeQuestion(
                     breed = breed.getDisplayName(),
                     imageUrl = imageUrl,
@@ -73,7 +63,7 @@ class BreedChallengeViewModel(
                 answer = BreedChallengeAnswer(
                     state = AnswerState.ANSWERING,
                     breed = "",
-                )
+                ),
             )
         }
     }
@@ -82,15 +72,20 @@ class BreedChallengeViewModel(
      * User action to answer the question
      */
     fun answer(answer: String) {
-        if (uiState.value.answer.state != AnswerState.ANSWERING) {
-            Log.i(TAG, "Only allowing answering once")
+        val state = _uiState.value
+        if (state !is BreedChallenge) {
+            Log.w(TAG, "Unsupported action in this state")
+            return
+        }
+        if (state.answer.state != AnswerState.ANSWERING) {
+            Log.w(TAG, "Only allowing answering once")
             return
         }
 
         _uiState.update {
-            it.copy(
+            state.copy(
                 answer = BreedChallengeAnswer(
-                    state = if (answer == it.question.breed) AnswerState.ANSWERED_CORRECTLY else AnswerState.ANSWERED_WRONGLY,
+                    state = if (answer == state.question.breed) AnswerState.ANSWERED_CORRECTLY else AnswerState.ANSWERED_WRONGLY,
                     breed = answer,
                 )
             )
@@ -105,40 +100,6 @@ class BreedChallengeViewModel(
             Pair(randomBreed, imageUrl)
         }
     }
-}
-
-/**
- * UI state for [BreedChallengeScreen]
- */
-data class BreedChallengeUiState(
-    val question: BreedChallengeQuestion,
-    val answer: BreedChallengeAnswer,
-)
-
-/**
- * UI state for the question in [BreedChallengeScreen]
- */
-data class BreedChallengeQuestion(
-    val breed: String,
-    val imageUrl: String,
-    val breedOptions: List<String>,
-)
-
-/**
- * UI state for the answer in [BreedChallengeScreen]
- */
-data class BreedChallengeAnswer(
-    val state: AnswerState,
-    val breed: String,
-)
-
-/**
- * Answering state of the breed challenge
- */
-enum class AnswerState {
-    ANSWERING,
-    ANSWERED_CORRECTLY,
-    ANSWERED_WRONGLY,
 }
 
 private const val TAG = "BreedChallengeViewModel"
