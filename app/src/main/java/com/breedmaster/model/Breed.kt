@@ -7,9 +7,13 @@ data class Breed(val name: String, val subBreed: String = "") {
 
     fun getDisplayName(): String {
         return if (subBreed.isEmpty()) {
-            name
+            name.capFirstLetter()
         } else {
-            "$name $subBreed"
+            "${name.capFirstLetter()} $subBreed"
         }
+    }
+
+    private fun String.capFirstLetter(): String {
+        return replaceFirstChar { it.uppercase() }
     }
 }
