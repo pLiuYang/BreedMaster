@@ -10,11 +10,11 @@ Build an Android app for people to memorize dog breeds.
 Engineer x 1, 3 hours
 
 Public API
-- Get a list of all breeds
+- <mark>Get a list of all breeds</mark>
 - Get a random dog picture
 - Get a picture of a certain breed
     - All images of that breed
-    - One random image
+    - <mark>One random image</mark>
     - Multiple random images
 - Get all the sub-breeds from a breed
     - All images of that breed
