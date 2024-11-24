@@ -22,11 +22,7 @@ Public API
     - Multiple random images
 
 # Architecture design
-------------------------- data ------------------------->
-
-Data layer         Domain layer        UI layer
-
-<------------------------ event ------------------------- 
+![arch-diagram.png](arch-diagram.png)
 
 # Task breakdown
 | Category | Details                                |
