@@ -22,7 +22,7 @@ Public API
     - Multiple random images
 
 # Architecture design
-![arch-diagram.png](arch-diagram.png)
+![arch-diagram.png](media%2Farch-diagram.png)
 
 # Task breakdown
 | Category | Details                                |
@@ -41,6 +41,9 @@ Public API
 | Add-on   | Polish UI                              |
 |          | Refresh image & options                |
 |          | Edge cases                             |
+
+# Screen recording
+![Screen_recording_20241124_155922.gif](media%2FScreen_recording_20241124_155922.gif)
 
 # Product feature extensions
 | Priority | Est. effort | Feature                                                |
